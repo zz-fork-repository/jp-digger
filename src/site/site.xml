@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project name="Digger">
+  <bannerLeft>
+    <name>Stigmata</name>
+    <src>images/logos/stigmata_logo.png</src>
+    <href>http://stigmata.sourceforge.jp/</href>
+    <alt>Stigmata: Java birthmark toolkit</alt>
+  </bannerLeft>
+
+  <bannerRight>
+    <name>Digger</name>
+    <src>images/logos/digger_logo.png</src>
+    <href>http://stigmata.sourceforge.jp/digger/</href>
+    <alt>Digger: Dig up class files</alt>
+  </bannerRight>
+
+  <poweredBy>
+    <logo name="Powered by ASM"
+          href="http://asm.objectweb.org/"
+          img="images/logos/poweredbyasm.gif"/>
+    <logo name="sourceforge.jp"
+          href="http://sourceforge.jp"
+          img="http://sourceforge.jp/sflogo.php?group_id=2661" />
+    <logo name="Build with Maven 2"
+          href="http://maven.apache.org"
+          img="images/logos/maven-feather.png"/>
+  </poweredBy>
+
+  <body>
+    <links>
+      <item name="Stigmata (jbirth 2.x)" href="http://stigmata.sourceforge.jp/" />
+      <item name="jbirth 1.x" href="http://se.naist.jp/jbirth/" />
+      <item name="Digger" href="http://stigmata.sourceforge.jp/digger/"/>
+    </links>
+
+    <menu name="Stigmata">
+      <item name="Introduction"        href="index.html"/>
+      <item name="Download"            href="download.html" />
+      <item name="License"             href="license.html"/>
+      <item name="FAQ"                 href="faq.html"/>
+    </menu>
+
+    <menu name="Links">
+      <item name="Project Page"   href="http://sourceforge.jp/projects/stigmata/"/>
+      <item name="DonQuixote"     href="http://donquixote.cafebabe.jp/" />
+    </menu>
+
+    ${reports}
+  </body>
+</project>
