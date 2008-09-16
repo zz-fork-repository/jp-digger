@@ -1,0 +1,13 @@
+ ----
+ Introduction
+ ----
+ Haruaki Tamada
+ ----
+ 2008-09-13
+ ----
+
+Overview
+
+ This library searches location of classes from classpath, file
+system, jar files, zip files, and war files.
+
