@@ -12,6 +12,8 @@ import java.util.List;
 import jp.sourceforge.stigmata.digger.util.WarClassLoader;
 
 /**
+ * Context object of Classpath.
+ * 
  * @author Haruaki TAMADA
  * @version $Revision$ 
  */
@@ -74,7 +76,7 @@ public class ClasspathContext implements Iterable<URL>{
     /**
      * returns a size of classpath list, which this context and parent context have.
      */
-    public int getClasspathSize(){
+    public synchronized int getClasspathSize(){
         int count = classpath.size();
         if(parent != null){
             count += parent.getClasspathSize();
@@ -98,21 +100,24 @@ public class ClasspathContext implements Iterable<URL>{
      * If you want to clear this context and parent context, use {@link #clearAll <code>clearAll</code>} method.
      * @see clearAll
      */
-    public void clear(){
+    public synchronized void clear(){
         classpath.clear();
     }
 
     /**
      * clears all of classpathes of this context and parent context.
      */
-    public void clearAll(){
+    public synchronized void clearAll(){
         clear();
         if(parent != null){
             parent.clearAll();
         }
     }
 
-    public Iterator<URL> iterator(){
+    /**
+     * returns an iterator of classpath list.
+     */
+    public synchronized Iterator<URL> iterator(){
         if(parent == null){
             return classpath.iterator();
         }
@@ -143,6 +148,10 @@ public class ClasspathContext implements Iterable<URL>{
         }
     }
 
+
+    /**
+     * construct and returns a ClassLoader object which loads from classpath list.
+     */
     public synchronized ClassLoader createClassLoader(){
         if(loader == null){
             List<URL> list = new ArrayList<URL>();
@@ -150,12 +159,22 @@ public class ClasspathContext implements Iterable<URL>{
                 list.add(url);
             }
 
-            loader = new WarClassLoader(list.toArray(new URL[list.size()]), getClass().getClassLoader());
+            ClassLoader parentClassLoader = null;
+            if(parent != null){
+                parentClassLoader = parent.createClassLoader();
+            }
+            loader = new WarClassLoader(list.toArray(new URL[list.size()]), parentClassLoader);
         }
         return loader;
     }
 
-    public ClassFileEntry find(String className) throws ClassNotFoundException{
+    /**
+     * returns a {@link ClassFileEntry <code>ClassFileEntry</code>} object
+     * which is named given className.
+     * 
+     * @return ClassFileEntry object, if not found given class, then returns null.
+     */
+    public synchronized ClassFileEntry findEntry(String className){
         ClassLoader loader = createClassLoader();
 
         URL resource = loader.getResource(className.replace('.', '/') + ".class");
@@ -165,7 +184,19 @@ public class ClasspathContext implements Iterable<URL>{
         return null;
     }
 
-    public Class<?> findClass(String className) throws ClassNotFoundException{
+    /**
+     * returns this context has given class entry or not.
+     */
+    public synchronized boolean hasEntry(String className){
+        ClassLoader loader = createClassLoader();
+        return loader.getResource(className.replace('.', '/') + ".class") != null;
+    }
+
+    /**
+     * finds and returns a {@link Class <code>Class</code>} object
+     * which is named given className.
+     */
+    public synchronized Class<?> findClass(String className) throws ClassNotFoundException{
         try{
             ClassLoader loader = createClassLoader();
 

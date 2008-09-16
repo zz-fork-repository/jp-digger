@@ -4,10 +4,12 @@ package jp.sourceforge.stigmata.digger;
  * $Id$
  */
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 /**
- * 
+ * This class manages class name and its location.
  *
  * @author Haruaki TAMADA
  * @version $Revision$ 
@@ -31,5 +33,9 @@ public class ClassFileEntry{
 
     public URL getLocation(){
         return location;
+    }
+
+    public InputStream openStream() throws IOException{
+        return getLocation().openStream();
     }
 }
