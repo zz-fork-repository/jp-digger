@@ -9,5 +9,31 @@
 Overview
 
  This library searches location of classes from classpath, file
-system, jar files, zip files, and war files.
+system, jar files, zip files, and war files.  <Digger> can be used for
+the application which engineer class files.
 
+How to Use
+
+----
+    ClasspathContext context = new ClasspathContext();
+    context.addClasspath(<url of class path>);
+        :
+
+    if(context.hasEntry("fully.class.name")){
+        ClassFileEntry entry = context.findEntry("fully.class.name");
+        if(entry != null){
+            try{
+                InputStream in = entry.openStream();
+
+                // some operation...
+            } catch(IOException exception){
+                // handle exception...
+            }
+        }
+        else{
+            throw new InternalError("never thrown, because hasEntry method returns true.");
+        }
+    }
+----
+
+ 
