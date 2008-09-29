@@ -4,7 +4,7 @@
   <groupId>jp.sourceforge.stigmata</groupId>
   <artifactId>digger</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <name>digger</name>
   <description>Dig up class files</description>
   <url>http://stigmata.sourceforge.jp/digger/</url>
@@ -74,9 +74,9 @@
   </distributionManagement>
 
   <scm>
-    <connection>scm:svn:http://svn.sourceforge.jp/svnroot/stigmata/digger/tags/digger-1.0.0</connection>
-    <developerConnection>scm:svn:svn+ssh://tama3@svn.sourceforge.jp/svnroot/stigmata/digger/tags/digger-1.0.0</developerConnection>
-    <url>scm:svn:svn+ssh://tama3@svn.sourceforge.jp/svnroot/stigmata/digger/tags/digger-1.0.0</url>
+    <connection>scm:svn:http://svn.sourceforge.jp/svnroot/stigmata/digger/trunk</connection>
+    <developerConnection>scm:svn:svn+ssh://tama3@svn.sourceforge.jp/svnroot/stigmata/digger/trunk/</developerConnection>
+    <url>http://svn.sourceforge.jp/cgi-bin/viewcvs.cgi/?root=stigmata</url>
   </scm>
 
   <build>
