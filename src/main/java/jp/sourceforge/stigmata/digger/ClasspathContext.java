@@ -18,20 +18,16 @@ import jp.sourceforge.stigmata.digger.util.WarClassLoader;
  * @version $Revision$ 
  */
 public class ClasspathContext implements Iterable<URL>{
-    private static ClasspathContext DEFAULT_CONTEXT = new ClasspathContext(false);
-
     private ClasspathContext parent;
     private List<URL> classpath = new ArrayList<URL>();
     private ClassLoader loader = null;
+    private boolean includeSystemClass = true;
 
-    /**
-     * private constructor for root context.
-     */
     private ClasspathContext(boolean flag){
     }
 
     public ClasspathContext(){
-        this(DEFAULT_CONTEXT);
+        this(new RootClasspathContext());
     }
 
     /**
@@ -39,6 +35,7 @@ public class ClasspathContext implements Iterable<URL>{
      */
     public ClasspathContext(ClasspathContext parent){
         this.parent = parent;
+        includeSystemClass = getParent().isIncludeSystemClasses();
     }
 
     /**
@@ -49,10 +46,27 @@ public class ClasspathContext implements Iterable<URL>{
     }
 
     /**
-     * returns default classpath context.
+     * If this method returns true, this object searches byte code 
+     * by original ClassLoader and current ClassLoader.
+     * If this method returns false, this object searches byte code
+     * by original ClassLoader only. Not search from current ClassLoader. 
      */
-    public static final ClasspathContext getDefaultContext(){
-        return DEFAULT_CONTEXT;
+    public boolean isIncludeSystemClasses(){
+        return includeSystemClass;
+    }
+
+    /**
+     * Set searching byte code by current ClassLoader.
+     * @see isIncludeSystemClasses
+     */
+    public synchronized void setIncludeSystemClasses(boolean flag){
+        if(includeSystemClass != flag){
+            loader = null;
+        }
+        this.includeSystemClass = flag;
+        if(parent != null){
+            parent.setIncludeSystemClasses(flag);
+        }
     }
 
     /**
@@ -163,6 +177,14 @@ public class ClasspathContext implements Iterable<URL>{
             if(parent != null){
                 parentClassLoader = parent.createClassLoader();
             }
+            else{
+                if(isIncludeSystemClasses()){
+                     parentClassLoader = getClass().getClassLoader();
+                }
+                else{
+                    parentClassLoader = ClassLoader.getSystemClassLoader();   
+                }
+            }
             loader = new WarClassLoader(list.toArray(new URL[list.size()]), parentClassLoader);
         }
         return loader;
@@ -178,6 +200,7 @@ public class ClasspathContext implements Iterable<URL>{
         ClassLoader loader = createClassLoader();
 
         URL resource = loader.getResource(className.replace('.', '/') + ".class");
+
         if(resource != null){
             return new ClassFileEntry(className, resource);
         }
@@ -200,9 +223,17 @@ public class ClasspathContext implements Iterable<URL>{
         try{
             ClassLoader loader = createClassLoader();
 
-            return loader.loadClass(className);
+            Class<?> clazz = loader.loadClass(className);
+
+            return clazz;
         } catch(NoClassDefFoundError e){
             throw new ClassNotFoundException(e.getMessage(), e);
+        }
+    }
+
+    private static class RootClasspathContext extends ClasspathContext{
+        RootClasspathContext(){
+            super(true);
         }
     }
 }
