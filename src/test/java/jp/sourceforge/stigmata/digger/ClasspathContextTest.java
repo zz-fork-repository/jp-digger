@@ -1,11 +1,21 @@
 package jp.sourceforge.stigmata.digger;
 
+/*
+ * $Id$
+ */
+
 import java.io.File;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * test for ClasspathContext class.
+ * 
+ * @author Haruaki Tamada
+ * @version $Revision$ 
+ */
 public class ClasspathContextTest{
     private ClasspathContext context;
 
