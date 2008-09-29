@@ -23,11 +23,7 @@ public class ClasspathContext implements Iterable<URL>{
     private ClassLoader loader = null;
     private boolean includeSystemClass = true;
 
-    private ClasspathContext(boolean flag){
-    }
-
     public ClasspathContext(){
-        this(new RootClasspathContext());
     }
 
     /**
@@ -228,12 +224,6 @@ public class ClasspathContext implements Iterable<URL>{
             return clazz;
         } catch(NoClassDefFoundError e){
             throw new ClassNotFoundException(e.getMessage(), e);
-        }
-    }
-
-    private static class RootClasspathContext extends ClasspathContext{
-        RootClasspathContext(){
-            super(true);
         }
     }
 }
