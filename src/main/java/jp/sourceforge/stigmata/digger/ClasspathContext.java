@@ -178,7 +178,7 @@ public class ClasspathContext implements Iterable<URL>{
                      parentClassLoader = getClass().getClassLoader();
                 }
                 else{
-                    parentClassLoader = ClassLoader.getSystemClassLoader();   
+                    parentClassLoader = null;
                 }
             }
             loader = new WarClassLoader(list.toArray(new URL[list.size()]), parentClassLoader);

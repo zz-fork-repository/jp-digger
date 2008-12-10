@@ -35,5 +35,6 @@ public class ClassFileEntryTest{
         File file = new File("target/classes/jp/sourceforge/stigmata/digger/ClasspathContext.class");
         Assert.assertEquals("jp.sourceforge.stigmata.digger.ClasspathContext", entry.getClassName());
         Assert.assertEquals(file.toURI().toURL(), entry.getLocation());
+        Assert.assertNotNull(entry.openStream());
     }
 }

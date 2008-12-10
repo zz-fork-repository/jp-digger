@@ -84,7 +84,7 @@ public class DefaultClassFileArchive implements ClassFileArchive{
             in = new FileInputStream(file);
             ClassReader reader = new ClassReader(in);
             ClassNameExtractVisitor visitor = new ClassNameExtractVisitor();
-            reader.accept(visitor, true);
+            reader.accept(visitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
 
             this.className = visitor.getClassName();
         } catch (FileNotFoundException ex) {

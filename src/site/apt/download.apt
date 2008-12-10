@@ -45,10 +45,10 @@ permissions and limitations under the License.
  We can see digger-x.x.x-bin.jar, and digger-x.x.x-src.jar.
  Both packages mean as followings.
 
- [digger-x.x.x-bin.jar] binary distribution package, contains class
+ [digger-x.x.x-bin.zip/tar.gz/tar.bz2] binary distribution package, contains class
    files and resource files.
 
- [digger-x.x.x-src.jar] source distribution package, contains
+ [digger-x.x.x-src.zip/tar.gz/tar.bz2] source distribution package, contains
  pom.xml, source files, resource files and documents.
  
 *Binary download by maven2 
@@ -73,9 +73,9 @@ Next, add <<<dependency>>> tag entry to <<<dependencies>>> tag in `pom.xml.'
   <dependencies>
       :
     <dependency>
-      <groupId>jp.sourceforge</groupId>
-      <artifactId>stigmata</artifactId>
-      <version>1.2.0</version>
+      <groupId>jp.sourceforge.stigmata</groupId>
+      <artifactId>digger</artifactId>
+      <version>1.0.0</version>
     </dependency>
       :
   </dependencies>
@@ -90,12 +90,12 @@ Next, add <<<dependency>>> tag entry to <<<dependencies>>> tag in `pom.xml.'
  The source can be checked out anonymously from Subversion.
 
 ----
-$ svn checkout http://svn.sourceforge.jp/svnroot/stigmata/trunk/ stigmata
+$ svn checkout http://svn.sourceforge.jp/svnroot/stigmata/digger/trunk digger
 ----
 
 **Web access
 
  We can browse the source code from following link.
 
- {{http://svn.sourceforge.jp/cgi-bin/viewcvs.cgi/?root=stigmata}}
+ {{http://svn.sourceforge.jp/cgi-bin/viewcvs.cgi/digger/?root=stigmata}}
 

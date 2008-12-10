@@ -5,6 +5,7 @@ package jp.sourceforge.stigmata.digger;
  */
 
 import java.io.File;
+import java.net.URL;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,6 +27,8 @@ public class ClasspathContextTest{
 
     @Test
     public void testBasic() throws ClassNotFoundException{
+        Assert.assertEquals(0, context.getClasspathSize());
+
         Class<?> classFileEntryClass = context.findClass("jp.sourceforge.stigmata.digger.ClassFileEntry");
         Class<?> classpathContextClass = context.findClass("jp.sourceforge.stigmata.digger.ClasspathContext");
 
@@ -33,6 +36,47 @@ public class ClasspathContextTest{
         Assert.assertNotNull(classpathContextClass);
         Assert.assertNotNull(context.findEntry("jp.sourceforge.stigmata.digger.ClassFileEntry"));
         Assert.assertNotNull(context.findEntry("jp.sourceforge.stigmata.digger.ClasspathContext"));
+    }
+
+    @Test
+    public void testBasic2() throws Exception{
+        context.addClasspath(new File("target/classes").toURI().toURL());
+        Assert.assertEquals(1, context.getClasspathSize());
+        Assert.assertEquals(new File("target/classes").toURI().toURL(), context.getClasspathList()[0]);
+
+        context.clear();
+        Assert.assertEquals(0, context.getClasspathSize());
+    }
+
+    @Test
+    public void testParent() throws Exception{
+        ClasspathContext subContext = new ClasspathContext(context);
+        context.addClasspath(new File("target/classes").toURI().toURL());
+        subContext.addClasspath(new File("target/asm-all-3.1.jar").toURI().toURL());
+
+        Assert.assertEquals(1, context.getClasspathSize());
+        Assert.assertEquals(2, subContext.getClasspathSize());
+
+        URL[] url = subContext.getClasspathList();
+        Assert.assertEquals(new File("target/classes").toURI().toURL(), url[0]);
+        Assert.assertEquals(new File("target/asm-all-3.1.jar").toURI().toURL(), url[1]);
+
+        subContext.clear();
+        Assert.assertEquals(1, subContext.getClasspathSize());
+
+        subContext.clearAll();
+        Assert.assertEquals(0, subContext.getClasspathSize());
+    }
+
+    @Test
+    public void testParent2() throws Exception{
+        ClasspathContext subContext = new ClasspathContext(context);
+        context.addClasspath(new File("target/classes").toURI().toURL());
+        subContext.addClasspath(new File("target/asm-all-3.1.jar").toURI().toURL());
+
+        Assert.assertTrue(context.isIncludeSystemClasses());
+        subContext.setIncludeSystemClasses(false);
+        Assert.assertFalse(context.isIncludeSystemClasses());
     }
 
     @Test(expected=ClassNotFoundException.class)
@@ -77,7 +121,7 @@ public class ClasspathContextTest{
     @Test
     public void testFindEntryNotSearchSystemClasspath4() throws Exception{
         context.addClasspath(new File("target/classes").toURI().toURL());
-        context.addClasspath(new File("target/asm-all-2.2.3.jar").toURI().toURL());
+        context.addClasspath(new File("target/asm-all-3.1.jar").toURI().toURL());
         context.setIncludeSystemClasses(false);
 
         Assert.assertTrue(context.hasEntry("java.lang.Object"));
@@ -115,7 +159,7 @@ public class ClasspathContextTest{
     @Test
     public void testNotSearchSystemClasspath4() throws Exception{
         context.addClasspath(new File("target/classes").toURI().toURL());
-        context.addClasspath(new File("target/asm-all-2.2.3.jar").toURI().toURL());
+        context.addClasspath(new File("target/asm-all-3.1.jar").toURI().toURL());
         context.setIncludeSystemClasses(false);
         Assert.assertNotNull(context.findClass("java.lang.Object"));
         Assert.assertNotNull(context.findClass("jp.sourceforge.stigmata.digger.ClasspathContext"));
@@ -170,7 +214,7 @@ public class ClasspathContextTest{
     @Test
     public void testSubContextNotSearchSystemClasspath4() throws Exception{
         context.addClasspath(new File("target/classes").toURI().toURL());
-        context.addClasspath(new File("target/asm-all-2.2.3.jar").toURI().toURL());
+        context.addClasspath(new File("target/asm-all-3.1.jar").toURI().toURL());
         context.setIncludeSystemClasses(false);
 
         ClasspathContext subContext = new ClasspathContext(context);
