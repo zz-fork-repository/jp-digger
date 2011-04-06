@@ -1,9 +1,5 @@
 package jp.sourceforge.stigmata.digger;
 
-/*
- * $Id$
- */
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -19,7 +15,6 @@ import java.util.jar.JarEntry;
  * 
  *
  * @author Haruaki TAMADA
- * @version $Revision$ 
  */
 public class WarClassFileArchive extends JarClassFileArchive{
     public WarClassFileArchive(String jarfile) throws IOException{

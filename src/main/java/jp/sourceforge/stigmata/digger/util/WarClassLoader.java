@@ -1,9 +1,5 @@
 package jp.sourceforge.stigmata.digger.util;
 
-/*
- * $Id$
- */
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +15,6 @@ import java.net.URLStreamHandlerFactory;
  * Then, this class loader can load classes included in a plain jar file and a war file.
  * 
  * @author Haruaki Tamada
- * @version $Revision$ 
  */
 public class WarClassLoader extends URLClassLoader{
     public WarClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory){
@@ -45,17 +40,27 @@ public class WarClassLoader extends URLClassLoader{
                 if(url.toString().endsWith(".war")){
                     try{
                         URL newurl = new URL("jar:" + url + "!/" + path);
-                        InputStream in = newurl.openStream();
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        byte[] data = new byte[256];
-                        int read = 0;
-                        while((read = in.read(data, 0, data.length)) != -1){
-                            out.write(data, 0, read);
+                        InputStream in = null;
+                        ByteArrayOutputStream out = null;
+                        byte[] classdata = null;
+                        try{
+                            in = newurl.openStream();
+                            out = new ByteArrayOutputStream();
+                            byte[] data = new byte[256];
+                            int read = 0;
+                            while((read = in.read(data, 0, data.length)) != -1){
+                                out.write(data, 0, read);
+                            }
+                            classdata = out.toByteArray();
+                        } finally{
+                            if(in != null){
+                                in.close();
+                            }
+                            if(out != null){
+                                out.close();
+                            }
                         }
-                        byte[] classdata = out.toByteArray();
-                        in.close();
-                        out.close();
-                    
+
                         clazz = defineClass(name, classdata, 0, classdata.length);
                         break;
                     } catch(IOException exp){

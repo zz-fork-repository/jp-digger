@@ -1,9 +1,5 @@
 package jp.sourceforge.stigmata.digger;
 
-/*
- * $Id$
- */
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +15,6 @@ import java.util.jar.JarFile;
 /**
  *
  * @author Haruaki TAMADA
- * @version $Revision$ 
  */
 public class JarClassFileArchive implements ClassFileArchive{
     private File file;

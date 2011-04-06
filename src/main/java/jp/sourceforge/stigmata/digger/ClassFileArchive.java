@@ -1,9 +1,5 @@
 package jp.sourceforge.stigmata.digger;
 
-/*
- * $Id$
- */
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -14,7 +10,6 @@ import java.util.Iterator;
  * and the set of a class file included in the archive.
  *
  * @author Haruaki TAMADA
- * @version $Revision$ 
  */
 public interface ClassFileArchive extends Iterable<ClassFileEntry>{
     /**

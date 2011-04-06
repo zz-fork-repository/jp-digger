@@ -4,7 +4,7 @@
   <groupId>jp.sourceforge.stigmata</groupId>
   <artifactId>digger</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <name>digger</name>
   <description>Dig up class files</description>
   <url>http://stigmata.sourceforge.jp/digger/</url>
@@ -42,14 +42,14 @@
   <dependencies>
     <dependency>
       <groupId>asm</groupId>
-      <artifactId>asm-all</artifactId>
-      <version>3.1</version>
+      <artifactId>asm</artifactId>
+      <version>3.3</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.3</version>
+      <version>4.8</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -69,7 +69,7 @@
     </repository>
     <site>
       <id>shell.sourceforge.jp</id>
-      <url>scp://tama3@shell.sourceforge.jp/home/groups/s/st/stigmata/digger/htdocs</url>
+      <url>scp://tama3@shell.sourceforge.jp/home/groups/s/st/stigmata/htdocs/digger</url>
     </site>
   </distributionManagement>
 
@@ -84,9 +84,19 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
         <configuration>
           <source>1.6</source>
           <target>1.6</target>
+          <encoding>utf-8</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.4.3</version>
+        <configuration>
           <encoding>utf-8</encoding>
         </configuration>
       </plugin>
@@ -118,20 +128,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
+        <version>3.0-beta-3</version>
         <configuration>
           <inputEncoding>utf-8</inputEncoding>
           <outputEncoding>utf-8</outputEncoding>
           <locales>en</locales>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <charset>utf-8</charset>
-          <docencoding>utf-8</docencoding>
-          <locale>en</locale>
         </configuration>
       </plugin>
 
@@ -149,48 +150,62 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <locale>en</locale>
-        </configuration>
+        <version>2.3.1</version>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.4</version>
         <configuration>
-          <linkXref>true</linkXref>
-          <sourceEncoding>utf-8</sourceEncoding>
-          <targetJdk>1.6</targetJdk>
+          <formats>
+            <format>xml</format>
+            <format>html</format>
+          </formats>
+          <encoding>utf-8</encoding>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <sourceEncoding>utf-8</sourceEncoding>
+          <outputEncoding>utf-8</outputEncoding>
+          <targetJdk>1.6</targetJdk>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
+        <version>2.3.2</version>
         <configuration>
-          <xmlOutput>false</xmlOutput>
-          <threshold>Normal</threshold>
-          <effort>Default</effort>
+          <sourceEncoding>utf-8</sourceEncoding>
+          <outputEncoding>utf-8</outputEncoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.8</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <inputEncoding>utf-8</inputEncoding>
+          <outputEncoding>utf-8</outputEncoding>
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <charset>utf-8</charset>
+          <encoding>utf-8</encoding>
+          <docencoding>utf-8</docencoding>
         </configuration>
       </plugin>
     </plugins>

@@ -1,9 +1,5 @@
 package jp.sourceforge.stigmata.digger;
 
-/*
- * $Id$
- */
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,7 +11,6 @@ import jp.sourceforge.stigmata.digger.util.WarClassLoader;
  * Context object of Classpath.
  * 
  * @author Haruaki TAMADA
- * @version $Revision$ 
  */
 public class ClasspathContext implements Iterable<URL>{
     private ClasspathContext parent;

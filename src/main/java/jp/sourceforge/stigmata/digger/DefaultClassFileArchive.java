@@ -1,9 +1,5 @@
 package jp.sourceforge.stigmata.digger;
 
-/*
- * $Id$
- */
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,15 +11,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.commons.EmptyVisitor;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
 
 /**
  * 
  * 
  *
  * @author Haruaki TAMADA
- * @version $Revision$ 
  */
 public class DefaultClassFileArchive implements ClassFileArchive{
     private File file;
@@ -101,7 +100,7 @@ public class DefaultClassFileArchive implements ClassFileArchive{
         }
     }
 
-    private static class ClassNameExtractVisitor extends EmptyVisitor{
+    private static class ClassNameExtractVisitor implements ClassVisitor{
         private String className;
 
         public String getClassName(){
@@ -112,6 +111,45 @@ public class DefaultClassFileArchive implements ClassFileArchive{
         public void visit(int version, int access, String name, String signature, 
                 String superClassName, String[] interfaces){
             className = name;
+        }
+
+        @Override
+        public AnnotationVisitor visitAnnotation(String arg0, boolean arg1){
+            return null;
+        }
+
+        @Override
+        public void visitAttribute(Attribute arg0){
+        }
+
+        @Override
+        public void visitEnd(){
+        }
+
+        @Override
+        public FieldVisitor visitField(int arg0, String arg1, String arg2,
+                String arg3, Object arg4){
+            return null;
+        }
+
+        @Override
+        public void visitInnerClass(String arg0, String arg1, String arg2,
+                int arg3){
+        }
+
+        @Override
+        public MethodVisitor visitMethod(int arg0, String arg1, String arg2,
+                String arg3, String[] arg4){
+            return null;
+        }
+
+        @Override
+        public void visitOuterClass(String arg0, String arg1, String arg2){
+        }
+
+        @Override
+        public void visitSource(String arg0, String arg1){
+
         }
     }
 }

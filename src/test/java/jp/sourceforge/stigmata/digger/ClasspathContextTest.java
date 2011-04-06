@@ -18,6 +18,7 @@ import org.junit.Test;
  * @version $Revision$ 
  */
 public class ClasspathContextTest{
+    private static final String ASM_FILE = "target/asm-3.3.jar";
     private ClasspathContext context;
 
     @Before
@@ -52,14 +53,14 @@ public class ClasspathContextTest{
     public void testParent() throws Exception{
         ClasspathContext subContext = new ClasspathContext(context);
         context.addClasspath(new File("target/classes").toURI().toURL());
-        subContext.addClasspath(new File("target/asm-all-3.1.jar").toURI().toURL());
+        subContext.addClasspath(new File(ASM_FILE).toURI().toURL());
 
         Assert.assertEquals(1, context.getClasspathSize());
         Assert.assertEquals(2, subContext.getClasspathSize());
 
         URL[] url = subContext.getClasspathList();
         Assert.assertEquals(new File("target/classes").toURI().toURL(), url[0]);
-        Assert.assertEquals(new File("target/asm-all-3.1.jar").toURI().toURL(), url[1]);
+        Assert.assertEquals(new File(ASM_FILE).toURI().toURL(), url[1]);
 
         subContext.clear();
         Assert.assertEquals(1, subContext.getClasspathSize());
@@ -72,7 +73,7 @@ public class ClasspathContextTest{
     public void testParent2() throws Exception{
         ClasspathContext subContext = new ClasspathContext(context);
         context.addClasspath(new File("target/classes").toURI().toURL());
-        subContext.addClasspath(new File("target/asm-all-3.1.jar").toURI().toURL());
+        subContext.addClasspath(new File(ASM_FILE).toURI().toURL());
 
         Assert.assertTrue(context.isIncludeSystemClasses());
         subContext.setIncludeSystemClasses(false);
@@ -121,7 +122,7 @@ public class ClasspathContextTest{
     @Test
     public void testFindEntryNotSearchSystemClasspath4() throws Exception{
         context.addClasspath(new File("target/classes").toURI().toURL());
-        context.addClasspath(new File("target/asm-all-3.1.jar").toURI().toURL());
+        context.addClasspath(new File(ASM_FILE).toURI().toURL());
         context.setIncludeSystemClasses(false);
 
         Assert.assertTrue(context.hasEntry("java.lang.Object"));
@@ -159,7 +160,7 @@ public class ClasspathContextTest{
     @Test
     public void testNotSearchSystemClasspath4() throws Exception{
         context.addClasspath(new File("target/classes").toURI().toURL());
-        context.addClasspath(new File("target/asm-all-3.1.jar").toURI().toURL());
+        context.addClasspath(new File(ASM_FILE).toURI().toURL());
         context.setIncludeSystemClasses(false);
         Assert.assertNotNull(context.findClass("java.lang.Object"));
         Assert.assertNotNull(context.findClass("jp.sourceforge.stigmata.digger.ClasspathContext"));
@@ -214,12 +215,22 @@ public class ClasspathContextTest{
     @Test
     public void testSubContextNotSearchSystemClasspath4() throws Exception{
         context.addClasspath(new File("target/classes").toURI().toURL());
-        context.addClasspath(new File("target/asm-all-3.1.jar").toURI().toURL());
+        context.addClasspath(new File(ASM_FILE).toURI().toURL());
         context.setIncludeSystemClasses(false);
 
         ClasspathContext subContext = new ClasspathContext(context);
         Assert.assertNotNull(subContext.findClass("java.lang.Object"));
         Assert.assertNotNull(subContext.findClass("jp.sourceforge.stigmata.digger.ClasspathContext"));
         Assert.assertNotNull(subContext.findClass("org.objectweb.asm.ClassReader"));
+    }
+
+    @Test
+    public void testWarLoader() throws Exception{
+        context.addClasspath(new File("target/test-classes/resources/samplewar.war").toURI().toURL());
+
+        Assert.assertNotNull(context.findClass("HelloWorld"));
+
+        ClasspathContext subContext = new ClasspathContext(context);
+        Assert.assertNotNull(subContext.findClass("HelloWorld"));
     }
 }
