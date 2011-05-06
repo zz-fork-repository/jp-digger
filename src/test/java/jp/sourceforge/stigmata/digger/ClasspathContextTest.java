@@ -1,9 +1,5 @@
 package jp.sourceforge.stigmata.digger;
 
-/*
- * $Id$
- */
-
 import java.io.File;
 import java.net.URL;
 
@@ -15,7 +11,6 @@ import org.junit.Test;
  * test for ClasspathContext class.
  * 
  * @author Haruaki Tamada
- * @version $Revision$ 
  */
 public class ClasspathContextTest{
     private static final String ASM_FILE = "target/asm-3.3.jar";

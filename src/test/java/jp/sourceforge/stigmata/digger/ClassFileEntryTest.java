@@ -1,9 +1,5 @@
 package jp.sourceforge.stigmata.digger;
 
-/*
- * $Id$
- */
-
 import java.io.File;
 import java.net.MalformedURLException;
 
@@ -14,7 +10,6 @@ import org.junit.Test;
 /**
  * 
  * @author Haruaki Tamada
- * @version $Revision$
  */
 public class ClassFileEntryTest{
     private ClasspathContext context;

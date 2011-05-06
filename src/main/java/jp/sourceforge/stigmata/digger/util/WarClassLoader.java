@@ -25,8 +25,16 @@ public class WarClassLoader extends URLClassLoader{
         super(urls, parent);
     }
 
-    public WarClassLoader(URL[] urls){
+    public WarClassLoader(URL... urls){
         super(urls);
+    }
+
+    public WarClassLoader(ClassLoader parent, URL... urls){
+        this(urls, parent);
+    }
+
+    public WarClassLoader(ClassLoader parent, URLStreamHandlerFactory factory, URL... urls){
+        this(urls, parent, factory);
     }
 
     @Override
@@ -40,26 +48,16 @@ public class WarClassLoader extends URLClassLoader{
                 if(url.toString().endsWith(".war")){
                     try{
                         URL newurl = new URL("jar:" + url + "!/" + path);
-                        InputStream in = null;
-                        ByteArrayOutputStream out = null;
-                        byte[] classdata = null;
-                        try{
-                            in = newurl.openStream();
-                            out = new ByteArrayOutputStream();
-                            byte[] data = new byte[256];
-                            int read = 0;
-                            while((read = in.read(data, 0, data.length)) != -1){
-                                out.write(data, 0, read);
-                            }
-                            classdata = out.toByteArray();
-                        } finally{
-                            if(in != null){
-                                in.close();
-                            }
-                            if(out != null){
-                                out.close();
-                            }
+                        InputStream in = newurl.openStream();
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        byte[] data = new byte[256];
+                        int read = 0;
+                        while((read = in.read(data, 0, data.length)) != -1){
+                            out.write(data, 0, read);
                         }
+                        byte[] classdata = out.toByteArray();
+                        in.close();
+                        out.close();
 
                         clazz = defineClass(name, classdata, 0, classdata.length);
                         break;
