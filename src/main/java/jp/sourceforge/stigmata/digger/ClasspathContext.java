@@ -1,11 +1,11 @@
 package jp.sourceforge.stigmata.digger;
 
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import jp.sourceforge.stigmata.digger.util.WarClassLoader;
 
 /**
  * Context object of Classpath.
@@ -48,7 +48,7 @@ public class ClasspathContext implements Iterable<URL>{
 
     /**
      * Set searching byte code by current ClassLoader.
-     * @see isIncludeSystemClasses
+     * @see #isIncludeSystemClasses
      */
     public synchronized void setIncludeSystemClasses(boolean flag){
         if(includeSystemClass != flag){
@@ -103,7 +103,7 @@ public class ClasspathContext implements Iterable<URL>{
     /**
      * clears all of classpathes of this context. not clear parent context.
      * If you want to clear this context and parent context, use {@link #clearAll <code>clearAll</code>} method.
-     * @see clearAll
+     * @see #clearAll
      */
     public synchronized void clear(){
         classpath.clear();
@@ -159,7 +159,7 @@ public class ClasspathContext implements Iterable<URL>{
      */
     public synchronized ClassLoader createClassLoader(){
         if(loader == null){
-            List<URL> list = new ArrayList<URL>();
+            final List<URL> list = new ArrayList<URL>();
             for(URL url: this){
                 list.add(url);
             }
@@ -176,7 +176,12 @@ public class ClasspathContext implements Iterable<URL>{
                     parentClassLoader = null;
                 }
             }
-            loader = new WarClassLoader(list.toArray(new URL[list.size()]), parentClassLoader);
+            final ClassLoader parent = parentClassLoader;
+            loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                public ClassLoader run(){
+                    return new WarClassLoader(list.toArray(new URL[list.size()]), parent);
+                }
+            });
         }
         return loader;
     }

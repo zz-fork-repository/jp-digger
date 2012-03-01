@@ -1,4 +1,4 @@
-package jp.sourceforge.stigmata.digger.util;
+package jp.sourceforge.stigmata.digger;
 
 import java.io.File;
 import java.net.URL;

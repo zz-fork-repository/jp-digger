@@ -57,6 +57,7 @@ public class JarClassFileArchive implements ClassFileArchive{
                     
                     list.add(new ClassFileEntry(className, location));
                 } catch (MalformedURLException ex) {
+                    throw new InternalError(ex.getMessage());
                 }
             }
         }
@@ -75,12 +76,13 @@ public class JarClassFileArchive implements ClassFileArchive{
                 
                 return new ClassFileEntry(className, location);
             } catch(MalformedURLException e){
+                throw new InternalError(e.getMessage());
             }
         }
         return null;
     }
 
-    Enumeration<JarEntry> jarentries(){
+    Enumeration<JarEntry> jarEntries(){
         return jarfile.entries();
     }
 

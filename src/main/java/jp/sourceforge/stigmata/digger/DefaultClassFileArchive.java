@@ -17,6 +17,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 /**
  * 
@@ -34,7 +35,11 @@ public class DefaultClassFileArchive implements ClassFileArchive{
     
     public DefaultClassFileArchive(File file){
         this.file = file;
-        parseClassName();
+        try{
+            parseClassName();
+        } catch(ParseClassNameFailedException e){
+            className = null;
+        }
     }
     
     public DefaultClassFileArchive(String file, String className){
@@ -50,8 +55,8 @@ public class DefaultClassFileArchive implements ClassFileArchive{
         try {
             return file.toURI().toURL();
         } catch (MalformedURLException ex) {
+            return null;
         }
-        return null;
     }
 
     public InputStream getInputStream(ClassFileEntry entry) throws IOException{
@@ -77,7 +82,7 @@ public class DefaultClassFileArchive implements ClassFileArchive{
         return className;
     }
 
-    private void parseClassName(){
+    private void parseClassName() throws ParseClassNameFailedException{
         FileInputStream in = null;
         try {
             in = new FileInputStream(file);
@@ -87,21 +92,26 @@ public class DefaultClassFileArchive implements ClassFileArchive{
 
             this.className = visitor.getClassName();
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+            throw new ParseClassNameFailedException(ex);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            throw new ParseClassNameFailedException(ex);
         } finally{
             if(in != null){
                 try{
                     in.close();
                 } catch(IOException e){
+                    throw new ParseClassNameFailedException(e);
                 }
             }
         }
     }
 
-    private static class ClassNameExtractVisitor implements ClassVisitor{
+    private static class ClassNameExtractVisitor extends ClassVisitor{
         private String className;
+
+        public ClassNameExtractVisitor(){
+            super(Opcodes.ASM4);
+        }
 
         public String getClassName(){
             return className;

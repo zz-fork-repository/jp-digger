@@ -31,7 +31,7 @@ public class WarClassFileArchive extends JarClassFileArchive{
     public Iterator<ClassFileEntry> iterator(){
         List<ClassFileEntry> list = new ArrayList<ClassFileEntry>();
 
-        for(Enumeration<JarEntry> e = jarentries(); e.hasMoreElements(); ){
+        for(Enumeration<JarEntry> e = jarEntries(); e.hasMoreElements(); ){
             JarEntry entry = e.nextElement();
             if(entry.getName().endsWith(".class")){
                 URL location = null;
@@ -43,7 +43,7 @@ public class WarClassFileArchive extends JarClassFileArchive{
 
                     list.add(new ClassFileEntry(className, location));
                 } catch (MalformedURLException ex) {
-                    ex.printStackTrace();
+                    throw new InternalError(ex.getMessage());
                 }
             }
         }
@@ -62,6 +62,7 @@ public class WarClassFileArchive extends JarClassFileArchive{
 
                 return new ClassFileEntry(className, location);
             } catch(MalformedURLException e){
+                throw new InternalError(e.getMessage());
             }
         }
         return null;

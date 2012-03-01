@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author Haruaki Tamada
  */
 public class ClasspathContextTest{
-    private static final String ASM_FILE = "target/asm-3.3.jar";
+    private static final String ASM_FILE = "target/asm-all-4.0.jar";
     private ClasspathContext context;
 
     @Before

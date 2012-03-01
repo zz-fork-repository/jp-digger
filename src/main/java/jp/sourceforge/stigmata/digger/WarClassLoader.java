@@ -1,4 +1,4 @@
-package jp.sourceforge.stigmata.digger.util;
+package jp.sourceforge.stigmata.digger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,23 +46,34 @@ public class WarClassLoader extends URLClassLoader{
             String path = "WEB-INF/classes/" + name.replace('.', '/') + ".class";
             for(URL url: getURLs()){
                 if(url.toString().endsWith(".war")){
+                    InputStream in = null;
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
                     try{
                         URL newurl = new URL("jar:" + url + "!/" + path);
-                        InputStream in = newurl.openStream();
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        in = newurl.openStream();
                         byte[] data = new byte[256];
                         int read = 0;
                         while((read = in.read(data, 0, data.length)) != -1){
                             out.write(data, 0, read);
                         }
                         byte[] classdata = out.toByteArray();
-                        in.close();
-                        out.close();
-
                         clazz = defineClass(name, classdata, 0, classdata.length);
-                        break;
                     } catch(IOException exp){
+                        throw e;
+                    } finally{
+                        if(in != null){
+                            try{ in.close(); }
+                            catch(IOException exception){
+                                throw new InternalError(exception.getMessage());
+                            }
+                        }
+                        try{ 
+                            out.close();
+                        } catch(IOException exception){
+                            throw new InternalError(exception.getMessage());
+                        }
                     }
+                    break;
                 }
             }
         }
