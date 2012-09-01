@@ -8,18 +8,26 @@
   <parent>
     <groupId>jp.sourceforge</groupId>
     <artifactId>stigmata</artifactId>
-    <version>4.0-SNAPSHOT</version>
+    <version>4.0</version>
   </parent>
 
   <groupId>jp.sourceforge.stigmata</groupId>
   <artifactId>digger</artifactId>
-  <version>4.0-SNAPSHOT</version>
+  <version>4.0</version>
   <packaging>jar</packaging>
 
   <name>Digger: Class Loading Library for Operating Class Files</name>
   <description>Dig up class files</description>
   <url>http://stigmata.sourceforge.jp/digger/</url>
   <inceptionYear>2008</inceptionYear>
+
+  <repositories>
+    <repository>
+      <id>stigmata.sourceforge.jp</id>
+      <name>Stigmata Maven2 Repository in sourceforge.jp</name>
+      <url>http://stigmata.sourceforge.jp/maven2</url>
+    </repository>
+  </repositories>
 
   <scm>
     <connection>scm:git:git://git.sourceforge.jp/gitroot/stigmata/digger.git</connection>
@@ -57,7 +65,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.0-beta-3</version>
+        <version>3.0</version>
         <configuration>
           <inputEncoding>utf-8</inputEncoding>
           <outputEncoding>utf-8</outputEncoding>
