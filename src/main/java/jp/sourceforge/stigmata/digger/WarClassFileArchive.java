@@ -17,6 +17,8 @@ import java.util.jar.JarEntry;
  * @author Haruaki TAMADA
  */
 public class WarClassFileArchive extends JarClassFileArchive{
+    private static final String WAR_FILE_CLASSPATH = "WEB-INF/classes/";
+
     public WarClassFileArchive(String jarfile) throws IOException{
         super(jarfile);
     }
@@ -33,17 +35,19 @@ public class WarClassFileArchive extends JarClassFileArchive{
 
         for(Enumeration<JarEntry> e = jarEntries(); e.hasMoreElements(); ){
             JarEntry entry = e.nextElement();
-            if(entry.getName().endsWith(".class")){
+            if(entry.getName().endsWith(CLASS_FILE_EXTENSION)){
                 URL location = null;
                 try {
                     location = new URL("jar:" + getLocation() + "!/" + entry.getName());
                     String className = entry.getName();
-                    className = className.substring("WEB-INF/classes/".length(), className.length() - ".class".length());
+                    className = className.substring(
+                        WAR_FILE_CLASSPATH.length(), className.length() - CLASS_FILE_EXTENSION.length()
+                    );
                     className = className.replace('/', '.');
 
                     list.add(new ClassFileEntry(className, location));
-                } catch (MalformedURLException ex) {
-                    throw new InternalError(ex.getMessage());
+                } catch(MalformedURLException ex){
+                    throw new IllegalStateException(ex);
                 }
             }
         }
@@ -51,18 +55,20 @@ public class WarClassFileArchive extends JarClassFileArchive{
     }
 
     public boolean hasEntry(String className){
-        return hasJarEntry("WEB-INF/classes/" + className.replace('.', '/') + ".class");
+        return hasJarEntry(
+            WAR_FILE_CLASSPATH + className.replace('.', '/') + CLASS_FILE_EXTENSION
+        );
     }
 
     public ClassFileEntry getEntry(String className) throws ClassNotFoundException{
         if(hasEntry(className)){
-            String entryName = className.replace('.', '/') + ".class";
+            String entryName = className.replace('.', '/') + CLASS_FILE_EXTENSION;
             try{
-                URL location = new URL("jar:" + getLocation() + "!/WEB-INF/classes/" + entryName);
+                URL location = new URL("jar:" + getLocation() + "!/" + WAR_FILE_CLASSPATH + entryName);
 
                 return new ClassFileEntry(className, location);
             } catch(MalformedURLException e){
-                throw new InternalError(e.getMessage());
+                throw new IllegalStateException(e);
             }
         }
         return null;

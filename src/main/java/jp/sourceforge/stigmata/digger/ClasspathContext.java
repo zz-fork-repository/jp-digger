@@ -127,32 +127,9 @@ public class ClasspathContext implements Iterable<URL>{
             return classpath.iterator();
         }
         else{
-            final Iterator<URL> parentIterator = parent.iterator();
-            final Iterator<URL> thisIterator = classpath.iterator();
-            return new Iterator<URL>(){
-                public boolean hasNext(){
-                    boolean next = parentIterator.hasNext();
-                    if(!next){
-                        next = thisIterator.hasNext();
-                    }
-                    return next;
-                }
-                public URL next(){
-                    URL nextObject = null;
-                    if(parentIterator.hasNext()){
-                        nextObject = parentIterator.next();
-                    }
-                    else{
-                        nextObject = thisIterator.next();
-                    }
-                    return nextObject;
-                }
-                public void remove(){
-                }
-            };
+            return new ParentIterator(parent.iterator(), classpath.iterator());
         }
     }
-
 
     /**
      * construct and returns a ClassLoader object which loads from classpath list.
@@ -176,10 +153,10 @@ public class ClasspathContext implements Iterable<URL>{
                     parentClassLoader = null;
                 }
             }
-            final ClassLoader parent = parentClassLoader;
+            final ClassLoader parentLoader = parentClassLoader;
             loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
                 public ClassLoader run(){
-                    return new WarClassLoader(list.toArray(new URL[list.size()]), parent);
+                    return new WarClassLoader(list.toArray(new URL[list.size()]), parentLoader);
                 }
             });
         }
@@ -193,9 +170,11 @@ public class ClasspathContext implements Iterable<URL>{
      * @return ClassFileEntry object, if not found given class, then returns null.
      */
     public synchronized ClassFileEntry findEntry(String className){
-        ClassLoader loader = createClassLoader();
+        ClassLoader localLoader = createClassLoader();
 
-        URL resource = loader.getResource(className.replace('.', '/') + ".class");
+        URL resource = localLoader.getResource(
+            className.replace('.', '/') + ClassFileArchive.CLASS_FILE_EXTENSION
+        );
 
         if(resource != null){
             return new ClassFileEntry(className, resource);
@@ -207,8 +186,10 @@ public class ClasspathContext implements Iterable<URL>{
      * returns this context has given class entry or not.
      */
     public synchronized boolean hasEntry(String className){
-        ClassLoader loader = createClassLoader();
-        return loader.getResource(className.replace('.', '/') + ".class") != null;
+        ClassLoader localLoader = createClassLoader();
+        return localLoader.getResource(
+            className.replace('.', '/') + ClassFileArchive.CLASS_FILE_EXTENSION
+        ) != null;
     }
 
     /**
@@ -217,13 +198,43 @@ public class ClasspathContext implements Iterable<URL>{
      */
     public synchronized Class<?> findClass(String className) throws ClassNotFoundException{
         try{
-            ClassLoader loader = createClassLoader();
+            ClassLoader localLoader = createClassLoader();
 
-            Class<?> clazz = loader.loadClass(className);
+            Class<?> clazz = localLoader.loadClass(className);
 
             return clazz;
         } catch(NoClassDefFoundError e){
             throw new ClassNotFoundException(e.getMessage(), e);
+        }
+    }
+
+    private static class ParentIterator implements Iterator<URL>{
+        private Iterator<URL> parentIterator;
+        private Iterator<URL> thisIterator;
+    
+        public ParentIterator(Iterator<URL> parentIterator, Iterator<URL> thisIterator){
+            this.parentIterator = parentIterator;
+            this.thisIterator = thisIterator;
+        }
+    
+        public boolean hasNext(){
+            boolean next = parentIterator.hasNext();
+            if(!next){
+                next = thisIterator.hasNext();
+            }
+            return next;
+        }
+        public URL next(){
+            URL nextObject = null;
+            if(parentIterator.hasNext()){
+                nextObject = parentIterator.next();
+            }
+            else{
+                nextObject = thisIterator.next();
+            }
+            return nextObject;
+        }
+        public void remove(){
         }
     }
 }

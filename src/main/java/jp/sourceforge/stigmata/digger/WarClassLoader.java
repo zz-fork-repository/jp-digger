@@ -17,6 +17,8 @@ import java.net.URLStreamHandlerFactory;
  * @author Haruaki Tamada
  */
 public class WarClassLoader extends URLClassLoader{
+    private static final int BUFFER_SIZE = 256;
+
     public WarClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory){
         super(urls, parent, factory);
     }
@@ -43,7 +45,10 @@ public class WarClassLoader extends URLClassLoader{
         try{
             clazz = super.findClass(name);
         } catch(ClassNotFoundException e){
-            String path = "WEB-INF/classes/" + name.replace('.', '/') + ".class";
+        }
+        if(clazz == null){
+            String path = "WEB-INF/classes/" + name.replace('.', '/')
+                + ClassFileArchive.CLASS_FILE_EXTENSION;
             for(URL url: getURLs()){
                 if(url.toString().endsWith(".war")){
                     InputStream in = null;
@@ -51,7 +56,7 @@ public class WarClassLoader extends URLClassLoader{
                     try{
                         URL newurl = new URL("jar:" + url + "!/" + path);
                         in = newurl.openStream();
-                        byte[] data = new byte[256];
+                        byte[] data = new byte[BUFFER_SIZE];
                         int read = 0;
                         while((read = in.read(data, 0, data.length)) != -1){
                             out.write(data, 0, read);
@@ -59,18 +64,18 @@ public class WarClassLoader extends URLClassLoader{
                         byte[] classdata = out.toByteArray();
                         clazz = defineClass(name, classdata, 0, classdata.length);
                     } catch(IOException exp){
-                        throw e;
+                        throw new ClassNotFoundException(name, exp);
                     } finally{
                         if(in != null){
                             try{ in.close(); }
                             catch(IOException exception){
-                                throw new InternalError(exception.getMessage());
+                                throw new IllegalStateException(exception);
                             }
                         }
                         try{ 
                             out.close();
                         } catch(IOException exception){
-                            throw new InternalError(exception.getMessage());
+                            throw new IllegalStateException(exception);
                         }
                     }
                     break;

@@ -37,7 +37,9 @@ public class JarClassFileArchive implements ClassFileArchive{
 
     public InputStream getInputStream(ClassFileEntry entry) throws IOException{
         if(hasEntry(entry.getClassName())){
-            return jarfile.getInputStream(jarfile.getEntry(entry.getClassName().replace('.', '/') + ".class"));
+            return jarfile.getInputStream(jarfile.getEntry(
+                entry.getClassName().replace('.', '/') + CLASS_FILE_EXTENSION
+            ));
         }
         return null;
     }
@@ -47,17 +49,17 @@ public class JarClassFileArchive implements ClassFileArchive{
         
         for(Enumeration<JarEntry> e = jarfile.entries(); e.hasMoreElements(); ){
             JarEntry entry = e.nextElement();
-            if(entry.getName().endsWith(".class")){
+            if(entry.getName().endsWith(CLASS_FILE_EXTENSION)){
                 URL location = null;
                 try {
                     location = new URL("jar:" + getLocation() + "!/" + entry.getName());
                     String className = entry.getName();
-                    className = className.substring(0, className.length() - ".class".length());
+                    className = className.substring(0, className.length() - CLASS_FILE_EXTENSION.length());
                     className = className.replace('/', '.');
                     
                     list.add(new ClassFileEntry(className, location));
                 } catch (MalformedURLException ex) {
-                    throw new InternalError(ex.getMessage());
+                    throw new IllegalStateException(ex);
                 }
             }
         }
@@ -65,18 +67,18 @@ public class JarClassFileArchive implements ClassFileArchive{
     }
 
     public boolean hasEntry(String className){
-        return jarfile.getEntry(className.replace('.', '/') + ".class") != null;
+        return jarfile.getEntry(className.replace('.', '/') + CLASS_FILE_EXTENSION) != null;
     }
 
     public ClassFileEntry getEntry(String className) throws ClassNotFoundException{
         if(hasEntry(className)){
-            String entryName = className.replace('.', '/') + ".class";
+            String entryName = className.replace('.', '/') + CLASS_FILE_EXTENSION;
             try{
                 URL location = new URL("jar:" + jarfile.getName() + "!/" + entryName);
                 
                 return new ClassFileEntry(className, location);
             } catch(MalformedURLException e){
-                throw new InternalError(e.getMessage());
+                throw new IllegalStateException(e);
             }
         }
         return null;

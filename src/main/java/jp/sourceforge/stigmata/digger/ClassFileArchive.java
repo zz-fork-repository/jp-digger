@@ -12,33 +12,35 @@ import java.util.Iterator;
  * @author Haruaki TAMADA
  */
 public interface ClassFileArchive extends Iterable<ClassFileEntry>{
+    String CLASS_FILE_EXTENSION = ".class";
+
     /**
      * returns the location of this archive.
      */
-    public URL getLocation();
+    URL getLocation();
 
     /**
      * returns the InputStream object from given entry.
      */
-    public InputStream getInputStream(ClassFileEntry entry) throws IOException;
+    InputStream getInputStream(ClassFileEntry entry) throws IOException;
 
     /**
      * returns an entries of this archive.
      */
-    public Iterator<ClassFileEntry> iterator();
+    Iterator<ClassFileEntry> iterator();
 
     /**
      * returns this archive has given class entry or not.
      */
-    public boolean hasEntry(String className);
+    boolean hasEntry(String className);
 
     /**
      * returns an entry of given class name.
      */
-    public ClassFileEntry getEntry(String className) throws ClassNotFoundException;
+    ClassFileEntry getEntry(String className) throws ClassNotFoundException;
 
     /**
      * returns the name of this archive.
      */
-    public String getName();
+    String getName();
 }

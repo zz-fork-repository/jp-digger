@@ -22,7 +22,7 @@ public class ClassFileEntry{
         return className;
     }
 
-    public void setLocation(URL location){
+    public final void setLocation(URL location){
         this.location = location;
     }
 
